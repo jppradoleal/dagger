@@ -2,7 +2,7 @@
 
 - [x] Basic API setup
 - [x] Pre-commit setup
-- [ ] Docker setup
+- [x] Docker setup
 - [ ] CI Pipeline setup
 - [ ] Create adega endpoint
 - [ ] List adegas endpoint
