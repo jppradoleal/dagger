@@ -1,6 +1,7 @@
 # TODO
 
-- [ ] Basic API setup
+- [x] Basic API setup
+- [x] Pre-commit setup
 - [ ] Docker setup
 - [ ] CI Pipeline setup
 - [ ] Create adega endpoint

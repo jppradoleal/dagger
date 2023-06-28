@@ -9,6 +9,9 @@ readme = "README.md"
 python = "^3.10"
 fastapi = "^0.98.0"
 uvicorn = {extras = ["standard"], version = "^0.22.0"}
+black = "^23.3.0"
+ruff = "^0.0.275"
+pre-commit = "^3.3.3"
 
 
 [build-system]
