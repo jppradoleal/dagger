@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "dagger"
+version = "0.1.0"
+description = ""
+authors = ["João Pedro Prado <joaopedro0128@hotmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.98.0"
+uvicorn = {extras = ["standard"], version = "^0.22.0"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
