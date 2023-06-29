@@ -3,6 +3,7 @@
 - [x] Basic API setup
 - [x] Pre-commit setup
 - [x] Docker setup
+- [x] SQLAlchemy + Alembic setup
 - [ ] CI Pipeline setup
 - [ ] Create adega endpoint
 - [ ] List adegas endpoint

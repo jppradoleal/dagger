@@ -2,14 +2,12 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .constants import ENV
+from dagger.api import users
+from dagger.constants import ENV
 
 app = FastAPI()
 public_app = FastAPI()
 private_app = FastAPI()
-
-app.mount("/api", public_app)
-app.mount("/api", private_app)
 
 origins = ["*"]
 
@@ -28,6 +26,12 @@ private_app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+private_app.include_router(users.router, prefix="/users", tags=["users"])
+
+
+app.mount("/api", private_app)
+app.mount("/public", public_app)
 
 if __name__ == "__main__":
     if ENV == "prod":
