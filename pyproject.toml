@@ -15,6 +15,7 @@ pre-commit = "^3.3.3"
 sqlalchemy = "^2.0.17"
 psycopg2 = "^2.9.6"
 alembic = "^1.11.1"
+geoalchemy2 = "^0.13.3"
 
 
 [build-system]

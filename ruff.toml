@@ -1,0 +1,3 @@
+[per-file-ignores]
+"__init__.py" = ["F401"]
+"dagger/database/base.py" = ["F401"]

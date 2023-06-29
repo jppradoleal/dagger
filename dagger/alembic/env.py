@@ -1,6 +1,7 @@
 from logging.config import fileConfig
 
 from alembic import context
+from geoalchemy2 import alembic_helpers
 from sqlalchemy import engine_from_config, pool
 
 from dagger.constants import DATABASE_URL
@@ -27,14 +28,23 @@ target_metadata = Base.metadata
 # ... etc.
 config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
-ignored_tables = ["spatial_ref_sys"]
+ignored_tables = []
 
 
 def include_object(object, name, type_, reflected, compare_to):
-    if type_ == "table" and (name in ignored_tables or object.schema != "public"):
+    # Se for GIS ele retorna falso
+    if type_ == "table" and (
+        name.startswith("geometry_columns")
+        or name.startswith("spatial_ref_sys")
+        or name.startswith("spatialite_history")
+        or name.startswith("sqlite_sequence")
+        or name.startswith("views_geometry_columns")
+        or name.startswith("virts_geometry_columns")
+        or name.startswith("idx_")
+        or object.schema != "public"
+    ):
         return False
-    else:
-        return True
+    return True
 
 
 def run_migrations_offline() -> None:
@@ -56,6 +66,8 @@ def run_migrations_offline() -> None:
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
         include_object=include_object,
+        process_revision_directives=alembic_helpers.writer,
+        render_item=alembic_helpers.render_item,
     )
 
     with context.begin_transaction():
@@ -80,6 +92,8 @@ def run_migrations_online() -> None:
             connection=connection,
             target_metadata=target_metadata,
             include_object=include_object,
+            process_revision_directives=alembic_helpers.writer,
+            render_item=alembic_helpers.render_item,
         )
 
         with context.begin_transaction():
