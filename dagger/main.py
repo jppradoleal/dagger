@@ -2,7 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from dagger.api import users
+from dagger.api import login, users
 from dagger.constants import ENV
 
 app = FastAPI()
@@ -27,6 +27,7 @@ private_app.add_middleware(
     allow_headers=["*"],
 )
 
+private_app.include_router(login.router, tags=["login"])
 private_app.include_router(users.router, prefix="/users", tags=["users"])
 
 
