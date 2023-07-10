@@ -8,6 +8,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - run: sudo apt install libsqlite3-mod-spatialite
       - run: pipx install poetry
       - name: Set up Python
         id: setup-python
