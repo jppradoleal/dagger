@@ -4,6 +4,8 @@
 - [x] Pre-commit setup
 - [x] Docker setup
 - [x] SQLAlchemy + Alembic setup
+- [x] Auth endpoint
+- [x] Auth tests
 - [ ] CI Pipeline setup
 - [ ] Create adega endpoint
 - [ ] List adegas endpoint

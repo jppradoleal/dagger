@@ -19,6 +19,11 @@ geoalchemy2 = "^0.13.3"
 passlib = "^1.7.4"
 python-jose = {extras = ["cryptography"], version = "^3.3.0"}
 python-multipart = "^0.0.6"
+shapely = "^2.0.1"
+debugpy = "^1.6.7"
+pytest = "^7.4.0"
+httpx = "^0.24.1"
+isort = "^5.12.0"
 
 
 [build-system]

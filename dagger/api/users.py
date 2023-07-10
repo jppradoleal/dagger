@@ -1,7 +1,6 @@
 from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 from dagger import models, schemas, services
@@ -19,11 +18,11 @@ def get_users(
         deps.get_current_active_superuser
     ),  # noqa: F401
 ):
-    users = services.user.get(db, skip, limit)
+    users = services.user.all(db, skip=skip, limit=limit)
     return users
 
 
-@router.post("/", response_model=schemas.user.User)
+@router.post("/", response_model=schemas.user.User, status_code=status.HTTP_201_CREATED)
 def create_user(
     *,
     db: Session = Depends(deps.get_db),
@@ -36,21 +35,6 @@ def create_user(
         )
 
     user = services.user.create(db, obj_in=user_in)
-
-    return user
-
-
-@router.put("/me", response_model=schemas.user.User)
-def update_user_me(
-    *,
-    db: Session = Depends(deps.get_db),
-    user_in: schemas.user.UserUpdate,
-    current_user: models.User = Depends(deps.get_current_active_user),
-):
-    current_user_data = jsonable_encoder(current_user)
-    user_in = schemas.user.UserUpdate(**current_user_data)
-
-    user = services.user.update(db, db_obj=current_user, obj_in=user_in)
 
     return user
 

@@ -1,3 +1,4 @@
+import debugpy
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -38,4 +39,5 @@ if __name__ == "__main__":
     if ENV == "prod":
         uvicorn.run("dagger.main:app", host="0.0.0.0", port=80, reload=True)
     else:
+        debugpy.listen(("0.0.0.0", 5678))
         uvicorn.run("dagger.main:app", host="0.0.0.0", port=8000, reload=True)

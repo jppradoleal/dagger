@@ -1,5 +1,5 @@
 from sqlalchemy import BigInteger
-from sqlalchemy.ext.declarative import as_declarative, declared_attr
+from sqlalchemy.orm import as_declarative, declared_attr
 
 
 @as_declarative()
