@@ -6,7 +6,7 @@
 - [x] SQLAlchemy + Alembic setup
 - [x] Auth endpoint
 - [x] Auth tests
-- [ ] CI Pipeline setup
+- [x] CI Pipeline setup
 - [ ] Create adega endpoint
 - [ ] List adegas endpoint
 - [ ] Search adegas endpoint

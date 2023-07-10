@@ -2,3 +2,5 @@
 *.pyc
 .vscode
 data/
+.pytest_cache
+.ruff_cache
