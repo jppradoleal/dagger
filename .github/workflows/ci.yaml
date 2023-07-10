@@ -20,6 +20,9 @@ jobs:
         if: steps.setup-python.outputs.cache-hit != 'true'
         run: poetry install -n
       - name: Linting
-        run: poetry run pre-commit run
+        run: |
+          poetry run isort --check .
+          poetry run black --check .
+          poetry run ruff check .
       - name: Tests
         run: poetry run pytest
