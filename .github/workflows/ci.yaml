@@ -8,7 +8,7 @@ on:
     
 
 jobs:
-  build:
+  build-project:
     runs-on: ubuntu-latest
 
     steps:
@@ -32,8 +32,12 @@ jobs:
       - name: Tests
         run: poetry run pytest
   
-  push-image:
+  build-and-push-image:
     runs-on: ubuntu-latest
+    needs: build-project
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v3
       - name: 'Login to GHCR'
