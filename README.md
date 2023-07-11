@@ -7,12 +7,10 @@
 - [x] Auth endpoint
 - [x] Auth tests
 - [x] CI Pipeline setup
-- [ ] Create adega endpoint
-- [ ] List adegas endpoint
-- [ ] Search adegas endpoint
-- [ ] Search adegas endpoint
-- [ ] Oauth integration
-- [ ] Authentication
-- [ ] Terraform infrastructure definition
+- [x] Create adega endpoint
+- [x] List adegas endpoint
+- [x] Search adegas endpoint
+- [x] Authentication
 - [ ] Kubernetes cluster definition
+- [ ] Terraform infrastructure definition
 - [ ] CD Pipeline setup

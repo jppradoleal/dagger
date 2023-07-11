@@ -1,1 +1,1 @@
-from . import security, user
+from . import partner, security, user

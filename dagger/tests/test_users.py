@@ -1,31 +1,9 @@
-from typing import Callable
-
-import pytest
 from fastapi import status
 from fastapi.testclient import TestClient
-from sqlalchemy.orm import Session
 
 from dagger import models
 from dagger.api import deps
 from dagger.main import private_app
-
-
-@pytest.fixture
-def create_user(session: Session) -> Callable[[str, str, bool, bool], models.User]:
-    def create_user(email, hashed_password, *, is_active=True, is_superuser=False):
-        user_in = models.User(
-            email=email,
-            hashed_password=hashed_password,
-            is_active=is_active,
-            is_superuser=is_superuser,
-        )
-        session.add(user_in)
-        session.commit()
-        session.refresh(user_in)
-
-        return user_in
-
-    return create_user
 
 
 def test_create_duplicate_user(client: TestClient, create_user):

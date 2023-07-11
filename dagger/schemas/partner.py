@@ -1,17 +1,45 @@
 from datetime import datetime
-from typing import Annotated, List, Optional
+from typing import Optional, Tuple, TypeVar
 
-from pydantic import BaseModel
+from geoalchemy2.shape import to_shape
+from pydantic import BaseModel, ConstrainedFloat, conlist, validator
+from shapely.geometry import mapping, shape
 
 
-class MultiPolygonGeometry(BaseModel):
+class Latitude(ConstrainedFloat):
+    ge = -90
+    le = 90
+
+
+class Longitude(ConstrainedFloat):
+    ge = -180
+    le = 180
+
+
+PolygonCoordinates = TypeVar(
+    "PolygonCoordinates",
+    bound=conlist(conlist(Tuple[Latitude, Longitude], min_items=3), min_items=1),
+)
+
+MultiPolygonCoordinates = TypeVar(
+    "MultiPolygonCoordinates", bound=conlist(PolygonCoordinates, min_items=1)
+)
+
+
+class BaseGeometry(BaseModel):
+    @property
+    def wkt_shape(self):
+        return shape(self.dict()).wkt
+
+
+class MultiPolygonGeometry(BaseGeometry):
     type: str = "MultiPolygon"
-    coordinates: List[List[List[List[float]]]]
+    coordinates: MultiPolygonCoordinates
 
 
-class PointGeometry(BaseModel):
+class PointGeometry(BaseGeometry):
     type: str = "Point"
-    coordinates: Annotated[List[float], 2]
+    coordinates: Tuple[Latitude, Longitude]
 
 
 class PartnerBase(BaseModel):
@@ -35,4 +63,11 @@ class Partner(PartnerBase):
     id: int
     is_active: bool
     created_at: datetime
-    updated_at: datetime
+    updated_at: Optional[datetime]
+
+    @validator("coverage_area", "address", pre=True)
+    def format_shape_data(cls, value):
+        return mapping(to_shape(value))
+
+    class Config:
+        orm_mode = True

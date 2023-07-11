@@ -1,11 +1,15 @@
+from typing import Callable
+
 from fastapi.testclient import TestClient
 from pytest import fixture
+from shapely import MultiPolygon, Point
 from sqlalchemy import create_engine
 from sqlalchemy.event import listen
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import StaticPool
 from sqlalchemy.sql import func, select
 
+from dagger import models
 from dagger.api import deps
 from dagger.database.base import Base
 from dagger.main import app, private_app
@@ -19,7 +23,7 @@ def db_stuff():
         SQLALCHEMY_DATABASE_URL,
         connect_args={"check_same_thread": False},
         poolclass=StaticPool,
-        execution_options={"schema_translate_map": {"public": None}}
+        execution_options={"schema_translate_map": {"public": None}},
         # echo=True,
     )
 
@@ -66,3 +70,65 @@ def client(session):
     private_app.dependency_overrides[deps.get_db] = override_get_db
 
     yield TestClient(app)
+
+
+@fixture
+def create_user(session: Session) -> Callable[[str, str, bool, bool], models.User]:
+    def create_user(email, hashed_password, *, is_active=True, is_superuser=False):
+        user_in = models.User(
+            email=email,
+            hashed_password=hashed_password,
+            is_active=is_active,
+            is_superuser=is_superuser,
+        )
+        session.add(user_in)
+        session.commit()
+        session.refresh(user_in)
+
+        return user_in
+
+    return create_user
+
+
+jacarei_centro_coverage = [
+    [
+        [
+            [-45.98708, -23.313928],
+            [-45.983422, -23.293525],
+            [-45.948181, -23.290125],
+            [-45.939989, -23.309136],
+            [-45.964926, -23.326551],
+            [-45.98708, -23.313928],
+        ],
+        [],
+    ]
+]
+
+
+@fixture
+def create_partner(
+    session: Session,
+) -> Callable[[str, str, str, list, list], models.Partner]:
+    def create_partner(
+        *,
+        trading_name,
+        owner_name,
+        document,
+        address_coordinate=[-23.309909, -45.965029],
+        coverage_coordinates=jacarei_centro_coverage
+    ):
+        partner_in = models.Partner(
+            trading_name=trading_name,
+            owner_name=owner_name,
+            document=document,
+            address=Point(address_coordinate).wkt,
+            coverage_area=MultiPolygon(coverage_coordinates).wkt,
+        )
+
+        session.add(partner_in)
+        session.commit()
+        session.refresh(partner_in)
+
+        return partner_in
+
+    return create_partner
