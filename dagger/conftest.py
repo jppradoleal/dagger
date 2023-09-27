@@ -48,7 +48,6 @@ def db_stuff():
 def session(db_stuff):
     engine, TestingSessionLocal = db_stuff
 
-    Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
 
     db = TestingSessionLocal()
@@ -57,6 +56,8 @@ def session(db_stuff):
         yield db
     finally:
         db.close()
+
+    Base.metadata.drop_all(bind=engine)
 
 
 @fixture

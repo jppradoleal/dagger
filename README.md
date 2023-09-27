@@ -44,6 +44,13 @@ Also, it's possible to run "docker-compose up" and get a development workspace.
 - [x] List adegas endpoint
 - [x] Search adegas endpoint
 - [x] Authentication
-- [ ] Kubernetes cluster definition
-- [ ] Terraform infrastructure definition
+- [x] Kubernetes cluster definition
+- [ ] WIP: Pulumi infrastructure definition
 - [ ] CD Pipeline setup
+- [ ] Improve README
+
+# How to run this project
+Run the latest image using sqlite, listening on port 8000
+```bash
+docker run -e ENV=prod -e DATABASE_URL=sqlite:// --name dagger -p 8000:8000 ghcr.io/jppradoleal/dagger:latest
+```
