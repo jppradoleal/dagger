@@ -65,7 +65,9 @@ dagger_ingress = create_ingress(
     "dagger-ingress",
     provider=provider,
     namespace=dagger_ns,
-    host="139-144-240-142.ip.linodeusercontent.com",
+    # Preciso encontrar uma forma de acessar o NodeBalancer criado pelo Linode
+    # para poder pegar o host automaticamente. Ou talvez forçar meu domínio.
+    host="143-42-178-51.ip.linodeusercontent.com",
     target_service_name="dagger-svc",
     depends_on=[nginx_ingress],
 )

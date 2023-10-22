@@ -9,4 +9,5 @@ COPY pyproject.toml poetry.lock /app/
 RUN pip install poetry
 RUN poetry install
 COPY . .
+RUN ["poetry", "run", "alembic", "upgrade", "head"]
 CMD ["poetry", "run", "python", "-m", "dagger.main"]

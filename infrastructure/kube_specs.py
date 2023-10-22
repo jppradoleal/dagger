@@ -21,6 +21,10 @@ def create_namespace(provider, name, labels):
 def install_postgres_chart(
     provider, name, namespace, replicas, password, database_name
 ):
+    install_postgis_script = (
+        "CREATE EXTENSION IF NOT EXISTS postgis; SELECT PostGIS_Version();"
+    )
+
     return k8s.helm.v3.Release(
         name,
         chart="postgresql",
@@ -42,6 +46,12 @@ def install_postgres_chart(
                 "database": database_name,
             },
             "global": {"storageClass": "linode-block-storage"},
+            "primary": {
+                "initdb": {
+                    "scripts": {"00_init_extensions.sql": install_postgis_script}
+                }
+            },
+            "image": {"debug": True},
         },
         opts=pulumi.ResourceOptions(provider=provider, depends_on=[namespace]),
     )
@@ -51,7 +61,16 @@ dagger_labels = {"app": "dagger"}
 
 
 def create_app_deployment(
-    name, provider, namespace, database, database_password, labels, replicas, env="DEV"
+    name,
+    provider,
+    namespace,
+    database,
+    database_user,
+    database_password,
+    database_name,
+    labels,
+    replicas,
+    env="DEV",
 ):
     database_service_url = pulumi.Output.all(
         namespace.metadata.name, database.status.name
@@ -60,7 +79,7 @@ def create_app_deployment(
     )
 
     database_url = database_service_url.apply(
-        lambda url: f"postgresql://postgres:{database_password}@{url}/dagger"
+        lambda url: f"postgresql://{database_user}:{database_password}@{url}/{database_name}"
     )
 
     return k8s.apps.v1.Deployment(
@@ -85,6 +104,15 @@ def create_app_deployment(
                                 k8s.core.v1.EnvVarArgs(
                                     name="DATABASE_URL",
                                     value=database_url,
+                                ),
+                                k8s.core.v1.EnvVarArgs(
+                                    name="PGPASSWORD", value=database_password
+                                ),
+                                k8s.core.v1.EnvVarArgs(
+                                    name="PGUSER", value=database_user
+                                ),
+                                k8s.core.v1.EnvVarArgs(
+                                    name="PGDATABASE", value=database_name
                                 ),
                                 k8s.core.v1.EnvVarArgs(name="ENV", value=env),
                             ],
